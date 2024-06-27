@@ -1,0 +1,90 @@
+# 1 Debian LTS Installation
+
+# 1.1 Install debian 12 image
+## >>> E.g. Use Hetzner installation image
+
+# 1.2 Update
+apt update && apt upgrade -y
+
+#--------------------------------------------------
+
+# 2 Install Docker (https://docs.docker.com/engine/install/debian/)
+
+# 2.1 Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# 2.2 Add the repository to apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+#2.3 Insstall latest version
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+#2.4 Check installation
+sudo docker run hello-world
+
+#--------------------------------------------------
+
+# 3 Install curl and git
+apt install curl git -y
+
+#--------------------------------------------------
+
+# 4 Install Piler Docker Image (https://simateccloud.de/projekt-mailpiler-fuer-docker/)
+
+# 4.1 Copy git repository to  /opt/
+cd /opt
+git clone https://github.com/simatec/piler-docker.git
+
+# 4.2 Run Installer 
+cd /opt/piler-docker
+bash install-piler.sh
+# Follow installation script by simatec. It really blows your mind!!
+
+#--------------------------------------------------
+
+# 5 Mailcow implementation 
+
+# 5.1 Add BCC map at domain level
+Mailcow > e-mails > configuration > adress rewriting
+
+# 5.1 Mailcow IMAP auth implementation
+https://docs.mailcow.email/third_party/mailpiler/third_party-mailpiler_integration/
+
+#--------------------------------------------------
+
+# 6 Futher steps
+
+# 6.1 Hardening / fire wall of SMTP Port 25 of piler as it accepts all incomming mails (limiting so dedicated mail server
+
+#--------------------------------------------------
+
+# 7 Legal background
+
+GoBD (Grundsätze zur ordnungsmäßigen Führung und Aufbewahrung von Büchern, Aufzeichnungen und Unterlagen in elektronischer Form sowie zum Datenzugriff) verlangt von JEDEM gewerblich Steuerpflichtinge (AG, GmbH, Freiberufler, Selbständigen, Youtuber) die sichere und unveränderliche Aufbewahrung von steuerrelevanten Unterlagen und das können auch Mails mit Rechnungen oder Bestellungen, Lieferscheinen etc. sein.
+
+Hier die Grundlagen:
+● Handelsgesetzbuch §§ 238, 239, 257 HGB
+● Ordnungsvorschriften des $147 AO
+● Grundsätze zur ordnungsmäßigen Führung und Aufbewahrung von Büchern,
+Aufzeichnungen und Unterlagen in elektronischer Form sowie zum Datenzugriff
+(GoBD)
+● Umsatzsteuergesetz (UStG)
+● Bundesdatenschutzgesetz (BDSG)
+● Landesdatenschutzgesetze (LDSG)
+● Gesetz zur Kontrolle und Transparenz Unternehmensbereich (KonTraG)
+● Telekommunikationsgesetz (TKB)
+● Aktiengesetz (AG)
+● Gesetz betreffend die Gesellschaften mit beschränkter Haftung (GmbHG)
+● General Data Protection Regulation (GDPR)
+● Signature Act §15
+● Sarbanes-Oxley Act (SOX)
+● Federal Rules of Civil Procedure (FRCP)
+● Basel II Direktive 
