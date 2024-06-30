@@ -1,10 +1,10 @@
 # 1 Debian LTS Installation
 
 # 1.1 Install debian 12 image
-## >>> E.g. Use Hetzner installation image
+## >>> E.g. https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-12.5.0-amd64-DVD-1.iso
 
 # 1.2 Update
-apt update && apt upgrade -y
+sudo apt update && apt upgrade -y
 
 #--------------------------------------------------
 
@@ -33,44 +33,69 @@ sudo docker run hello-world
 #--------------------------------------------------
 
 # 3 Install curl and git
-apt install curl git -y
+sudo apt install curl git -y
 
 #--------------------------------------------------
 
 # 4 Install Piler Docker Image (https://simateccloud.de/projekt-mailpiler-fuer-docker/)
 
 # 4.1 Copy git repository to  /opt/
-cd /opt
-git clone https://github.com/simatec/piler-docker.git
+sudo cd /opt
+sudo git clone https://github.com/simatec/piler-docker.git
 
 # 4.2 Run Installer 
-cd /opt/piler-docker
-bash install-piler.sh
+sudo cd /opt/piler-docker
+sudo bash install-piler.sh
 # Follow installation script by simatec. It really blows your mind!!
 
 #--------------------------------------------------
 
-# 5 Mailcow implementation 
+# 5 Mail server modification 
+# Depending of your mail server add a BCC map to send every incomming and
+# outgoing mail to the new piler.
+# I use mailcow...:
 
 # 5.1 Add BCC map at domain level
 Mailcow > e-mails > configuration > adress rewriting
 
 # 5.1 Mailcow IMAP auth implementation
-https://docs.mailcow.email/third_party/mailpiler/third_party-mailpiler_integration/
+see https://docs.mailcow.email/third_party/mailpiler/third_party-mailpiler_integration/
 
 #--------------------------------------------------
 
-# 6 Futher steps
+# 6 Firewall as piler accepts every incomming SMTP connection on port 25
+PILER_DOMAIN="yourpiler.domain.tld"
+MAILSERVER_DOMAIN="yourmail.domain.tld"
 
-# 6.1 Hardening / fire wall of SMTP Port 25 of piler as it accepts all incomming mails (limiting so dedicated mail server
+# 6.2 Installing ufw
+sudo apt install ufw
+sudo ufw version
+
+# 6.3 Setting up firewall with ssh and HTTPS Port 
+sudo ufw add ssh
+# depending if with or without certificate:
+sudo ufw add https
+#sudo ufw add http
+sudo ufw limit ssh/tcp comment 'Rate limit for openssh server'
+
+# 6.4 Allowing SMTP:25 connections only from our mail server
+sudo ufw allow proto tcp from $MAILSERVER_DOMAIN to $PILER_DOMAIN port 25
+
+# 6.5 Verification and enabeling
+sudo ufw show added
+sudo ufw enable
 
 #--------------------------------------------------
 
-# 7 Legal background
+# 7 Legal background (ohne Rechtsberatung)
 
-GoBD (Grundsätze zur ordnungsmäßigen Führung und Aufbewahrung von Büchern, Aufzeichnungen und Unterlagen in elektronischer Form sowie zum Datenzugriff) verlangt von JEDEM gewerblich Steuerpflichtinge (AG, GmbH, Freiberufler, Selbständigen, Youtuber) die sichere und unveränderliche Aufbewahrung von steuerrelevanten Unterlagen und das können auch Mails mit Rechnungen oder Bestellungen, Lieferscheinen etc. sein.
+GoBD (Grundsätze zur ordnungsmäßigen Führung und Aufbewahrung von Büchern, Aufzeichnungen 
+und Unterlagen in elektronischer Form sowie zum Datenzugriff) verlangt von jedem 
+gewerblich Steuerpflichtinge (AG, GmbH, Freiberufler, Selbständigen, Youtuber) die 
+sichere und unveränderliche Aufbewahrung von steuerrelevanten Unterlagen und das 
+können auch Mails mit Rechnungen oder Bestellungen, Lieferscheinen etc. sein.
 
-Hier die Grundlagen:
+Grundlagen:
 ● Handelsgesetzbuch §§ 238, 239, 257 HGB
 ● Ordnungsvorschriften des $147 AO
 ● Grundsätze zur ordnungsmäßigen Führung und Aufbewahrung von Büchern,
